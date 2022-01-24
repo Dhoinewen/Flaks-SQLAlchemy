@@ -1,1 +1,1 @@
-print('dev1')
+from flask import Flask
