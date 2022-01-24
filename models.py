@@ -2,7 +2,7 @@ from sqlalchemy import create_engine, Table, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import sessionmaker, relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
-conn = create_engine("postgresql+psycopg2://postgres:123456@localhost/test", echo=True)
+conn = create_engine("postgresql+psycopg2://postgres:123456@localhost/test", echo=False)
 Session = sessionmaker()
 session = Session(bind=conn)
 
