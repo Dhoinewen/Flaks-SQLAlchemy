@@ -21,7 +21,7 @@ class Group(Base):
     __tablename__ = 'groups'
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
-    students = relationship('Student', backref='group', lazy=True)
+    students = relationship('Student', backref='group_', lazy=True)
 
     def __repr__(self):
         return f'{self.name}'
@@ -30,7 +30,7 @@ class Group(Base):
 class Student(Base):
     __tablename__ = 'students'
     id = Column(Integer, primary_key=True)
-    group_id = Column(Integer, ForeignKey("groups.id"))
+    group = Column(ForeignKey("groups.id"))
     first_name = Column(String(250), nullable=False)
     last_name = Column( String(250), nullable=False)
     courses = relationship(

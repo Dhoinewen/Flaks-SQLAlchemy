@@ -1,16 +1,28 @@
 from models import session, Student, Group, Course
 
 
+def get_solo_student_from_db(student_id):
+    student = session.query(Student).filter(Student.id == student_id).first()
+    if student is None:
+        return None
+    sample = {'first_name': student.first_name,
+              'last_name': student.last_name,
+              'id': student.id,
+              'courses': student.courses,
+              'group': student.group}
+    return sample
+
+
 def get_students_data_from_db():
     students_list = list()
     students = session.query(Student).all()
     for student in students:
-        dict = {'first_name': student.first_name,
+        sample = {'first_name': student.first_name,
                 'last_name': student.last_name,
                 'id': student.id,
                 'courses': student.courses,
-                'group_id': student.group_id}
-        students_list.append(dict)
+                'group': student.group}
+        students_list.append(sample)
     return students_list
 
 
@@ -23,9 +35,9 @@ def get_groups_data_from_db(less_than):
                 groups.remove(group)
 
     for group in groups:
-        dict = {'id': group.id,
+        sample = {'id': group.id,
                 'name': group.name,
                 'students': group.students,
                 'number of students': len(group.students)}
-        groups_list.append(dict)
+        groups_list.append(sample)
     return groups_list
