@@ -1,5 +1,5 @@
 from models import session, Student, Group, Course
-
+from sqlalchemy import func
 
 def get_solo_student_from_db(student_id):
     student = session.query(Student).filter(Student.id == student_id).first()
@@ -28,16 +28,14 @@ def get_students_data_from_db():
 
 def get_groups_data_from_db(less_than):
     groups_list = list()
-    groups = session.query(Group).all()
-    if less_than is not None:
-        for group in groups:
-            if len(group.students) < int(less_than):
-                groups.remove(group)
-
+    print(type(less_than))
+    if less_than is None:
+        groups = session.query(Group).all()
+    else:
+        groups = session.query(Group).join(Student).group_by(Group).having(func.count(Group.students) < less_than).all()
     for group in groups:
         sample = {'id': group.id,
                 'name': group.name,
-                'students': group.students,
-                'number of students': len(group.students)}
+                'students': group.students}
         groups_list.append(sample)
     return groups_list
