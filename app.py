@@ -1,13 +1,15 @@
 from flask import Flask, Response
-from flask_restful import Api, Resource, abort, reqparse
+from flask_restful import Api, Resource, reqparse
 from helpers import convert_to_xml
 from get_data import get_students_data_from_db, get_groups_data_from_db, get_solo_student_from_db
 
 
 app = Flask(__name__)
 api = Api(app)
-parser = reqparse.RequestParser()
-parser.add_argument('less_than')
+parser_group = reqparse.RequestParser()
+parser_student = reqparse.RequestParser()
+parser_group.add_argument('less_than')
+parser_student.add_argument('course_name')
 
 
 class StudentSolo(Resource):
@@ -17,12 +19,13 @@ class StudentSolo(Resource):
 
 class StudentList(Resource):
     def get(self):
-        return Response(convert_to_xml(get_students_data_from_db()), mimetype='text/xml')
+        args = parser_student.parse_args()
+        return Response(convert_to_xml(get_students_data_from_db(args['course_name'])), mimetype='text/xml')
 
 
 class GroupList(Resource):
     def get(self):
-        args = parser.parse_args()
+        args = parser_group.parse_args()
         return Response(convert_to_xml(get_groups_data_from_db(args['less_than'])), mimetype='text/xml')
 
 

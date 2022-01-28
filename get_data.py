@@ -14,9 +14,12 @@ def get_solo_student_from_db(student_id):
     return sample
 
 
-def get_students_data_from_db():
+def get_students_data_from_db(course_name):
     students_list = list()
-    students = session.query(Student).all()
+    if course_name is None:
+        students = session.query(Student).all()
+    else:
+        students = session.query(Student).filter(Student.courses.any(Course.name == course_name)).all()
     for student in students:
         sample = {
             'first_name': student.first_name,
