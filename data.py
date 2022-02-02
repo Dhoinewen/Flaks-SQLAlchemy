@@ -45,3 +45,14 @@ def relationship_from_student_to_courses():
         for course in range(random.randint(1, 3)):
             student.courses.append(random.choice(courses_list))
             session.commit()
+
+
+def create_data():
+    students_data()
+    groups_data()
+    course_data()
+    relationship_from_group_to_student()
+    relationship_from_student_to_courses()
+
+
+create_data()

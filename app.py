@@ -1,7 +1,8 @@
 from flask import Flask, Response
 from flask_restful import Api, Resource, reqparse
 from helpers import convert_to_xml
-from get_data import get_students_data_from_db, get_groups_data_from_db, get_solo_student_from_db
+from get_data import get_students_data_from_db, get_groups_data_from_db, get_solo_student_from_db,\
+    delete_solo_student_from_db, add_course_to_student
 
 
 app = Flask(__name__)
@@ -15,6 +16,13 @@ parser_student.add_argument('course_name')
 class StudentSolo(Resource):
     def get(self, student_id):
         return Response(convert_to_xml(get_solo_student_from_db(student_id)), mimetype='text/xml')
+
+    def delete(self, student_id):
+        return Response(convert_to_xml(delete_solo_student_from_db(student_id)), mimetype='text/xml')
+
+    def put(self, student_id):
+        args = parser_student.parse_args()
+        return Response(convert_to_xml(add_course_to_student(student_id, args['course_name'])), mimetype='text/xml')
 
 
 class StudentList(Resource):

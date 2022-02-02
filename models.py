@@ -12,8 +12,8 @@ Base = declarative_base()
 association = Table(
     'association',
     Base.metadata,
-    Column('student_id', Integer, ForeignKey('courses.id')),
-    Column('course_id', Integer, ForeignKey('students.id'))
+    Column('student_id', Integer, ForeignKey('courses.id', ondelete="CASCADE")),
+    Column('course_id', Integer, ForeignKey('students.id', ondelete="CASCADE"))
 )
 
 
@@ -35,7 +35,9 @@ class Student(Base):
     last_name = Column( String(250), nullable=False)
     courses = relationship(
         'Course', secondary=association,
-        back_populates='students', lazy=True
+        back_populates='students', lazy=True,
+        cascade="all, delete",
+        passive_deletes=True
     )
 
     def __repr__(self):

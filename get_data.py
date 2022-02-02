@@ -2,6 +2,21 @@ from models import session, Student, Group, Course
 from sqlalchemy import func
 
 
+def add_course_to_student(student_id, course_name):
+    student = session.query(Student).filter(Student.id == student_id).first()
+    course = session.query(Course).filter(Course.name == course_name).first()
+    student.courses.append(course)
+    session.commit()
+    return student
+
+
+def delete_solo_student_from_db(student_id):
+    student = session.query(Student).filter(Student.id == student_id).first()
+    session.delete(student)
+    session.commit()
+    return student
+
+
 def get_solo_student_from_db(student_id):
     student = session.query(Student).filter(Student.id == student_id).first()
     if student is None:
@@ -34,7 +49,6 @@ def get_students_data_from_db(course_name):
 
 def get_groups_data_from_db(less_than):
     groups_list = list()
-    print(type(less_than))
     if less_than is None:
         groups = session.query(Group).all()
     else:
