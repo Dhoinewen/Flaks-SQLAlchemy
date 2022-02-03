@@ -2,6 +2,15 @@ from models import session, Student, Group, Course
 from sqlalchemy import func
 
 
+def add_new_student(first_name, last_name):
+    sample_student = {'first_name': first_name, 'last_name': last_name}
+    student = Student(**sample_student)
+    session.add(student)
+    session.commit()
+    student = session.query(Student).filter(Student.first_name == first_name).first()
+    return student
+
+
 def add_course_to_student(student_id, course_name):
     student = session.query(Student).filter(Student.id == student_id).first()
     course = session.query(Course).filter(Course.name == course_name).first()
