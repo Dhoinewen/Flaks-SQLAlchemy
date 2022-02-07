@@ -2,10 +2,25 @@ from models import session, Student, Group, Course
 from sqlalchemy import func
 
 
-def delete_course_from_student(student_id, course_name):
+def get_student_courses(student_id):
+    course_list = list()
     student = session.query(Student).filter(Student.id == student_id).first()
-    course = session.query(Course).filter(Course.name == course_name).first()
-    if student or course is None:
+    if student is None:
+        return 'Error in data'
+    else:
+        for courses in student.courses:
+            sample = {
+                'Name': courses.name,
+                'Id': courses.id
+            }
+            course_list.append(sample)
+        return course_list
+
+
+def delete_course_from_student(student_id, course_id):
+    student = session.query(Student).filter(Student.id == student_id).first()
+    course = session.query(Course).filter(Course.id == course_id[0]).first()
+    if student and course is None:
         return 'Error in data'
     else:
         student.courses.remove(course)
@@ -21,15 +36,21 @@ def add_new_student(first_name, last_name):
     return student
 
 
-def add_course_to_student(student_id, course_id):
+def add_course_to_student(student_id, courses_id):
+    courses = list()
     student = session.query(Student).filter(Student.id == student_id).first()
-    course = session.query(Course).filter(Course.id == course_id).first()
-    if student or course is None:
+    for course_id in courses_id:
+        course = session.query(Course).filter(Course.id == course_id).first()
+        courses.append(course)
+    if student is None:
         return 'Error in data'
     else:
-        student.courses.append(course)
+        for course in courses:
+            if student.courses.count(course) > 0:
+                print('None')
+            else:
+                student.courses.append(course)
         session.commit()
-        return student
 
 
 def delete_solo_student_from_db(student_id):

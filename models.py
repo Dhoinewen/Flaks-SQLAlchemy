@@ -32,7 +32,7 @@ class Student(Base):
     id = Column(Integer, primary_key=True)
     group = Column(ForeignKey("groups.id"))
     first_name = Column(String(250), nullable=False)
-    last_name = Column( String(250), nullable=False)
+    last_name = Column(String(250), nullable=False)
     courses = relationship(
         'Course', secondary=association,
         back_populates='students', lazy=True,
@@ -59,4 +59,3 @@ class Course(Base):
 
 
 Base.metadata.create_all(bind=conn)
-
