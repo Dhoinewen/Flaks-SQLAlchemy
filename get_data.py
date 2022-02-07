@@ -3,12 +3,14 @@ from sqlalchemy import func
 
 
 def delete_course_from_student(student_id, course_name):
-    print(student_id, course_name)
     student = session.query(Student).filter(Student.id == student_id).first()
     course = session.query(Course).filter(Course.name == course_name).first()
-    student.courses.remove(course)
-    session.commit()
-    return student.courses
+    if student or course is None:
+        return 'Error in data'
+    else:
+        student.courses.remove(course)
+        session.commit()
+        return student.courses
 
 
 def add_new_student(first_name, last_name):
@@ -16,23 +18,23 @@ def add_new_student(first_name, last_name):
     student = Student(**sample_student)
     session.add(student)
     session.commit()
-    student = session.query(Student).filter(Student.first_name == first_name).first()
     return student
 
 
-def add_course_to_student(student_id, course_name):
+def add_course_to_student(student_id, course_id):
     student = session.query(Student).filter(Student.id == student_id).first()
-    course = session.query(Course).filter(Course.name == course_name).first()
-    student.courses.append(course)
-    session.commit()
-    return student
+    course = session.query(Course).filter(Course.id == course_id).first()
+    if student or course is None:
+        return 'Error in data'
+    else:
+        student.courses.append(course)
+        session.commit()
+        return student
 
 
 def delete_solo_student_from_db(student_id):
-    student = session.query(Student).filter(Student.id == student_id).first()
-    session.delete(student)
+    session.query(Student).filter(Student.id == student_id).delete()
     session.commit()
-    return student
 
 
 def get_solo_student_from_db(student_id):
@@ -47,12 +49,12 @@ def get_solo_student_from_db(student_id):
     return sample
 
 
-def get_students_data_from_db(course_name):
+def get_students_data_from_db(course_id):
     students_list = list()
-    if course_name is None:
+    if course_id is None:
         students = session.query(Student).all()
     else:
-        students = session.query(Student).filter(Student.courses.any(Course.name == course_name)).all()
+        students = session.query(Student).filter(Student.courses.any(Course.id == course_id)).all()
     for student in students:
         sample = {
             'first_name': student.first_name,

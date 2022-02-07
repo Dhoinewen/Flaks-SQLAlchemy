@@ -1,9 +1,10 @@
-from dict2xml import dict2xml
+import json
 
 
-def convert_to_xml(students_list):
-    dict_for_xml = dict()
-    dict_for_xml['student'] = students_list
-    xml = '<?xml version = "1.0" encoding = "UTF-8" standalone = "no"?>' + dict2xml(dict_for_xml, wrap="studentList",
-                                                                                    indent="  ")
-    return xml
+def myconverter(o):
+    if isinstance(o, object):
+        return o.name.__str__()
+
+
+def convert_to_json(students_list):
+    return json.dumps(students_list, default=myconverter, indent=4)
