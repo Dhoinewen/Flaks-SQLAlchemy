@@ -20,7 +20,11 @@ parser_student_data.add_argument('last_name', type=str)
 
 class StudentSolo(Resource):
     def get(self, student_id):
-        return Response(convert_to_json(get_solo_student_from_db(student_id)), mimetype='application/json')
+        student = get_solo_student_from_db(student_id)
+        if student is None:
+            return 404
+        else:
+            return Response(convert_to_json(student), mimetype='application/json')
 
     def delete(self, student_id):
         delete_solo_student_from_db(student_id)
@@ -29,7 +33,11 @@ class StudentSolo(Resource):
 
 class StudentCourses(Resource):
     def get(self, student_id):
-        return Response(convert_to_json(get_student_courses(student_id)), mimetype='application/json')
+        student = get_student_courses(student_id)
+        if student is None:
+            return '', 404
+        else:
+            return student
 
     def delete(self, student_id):
         args = parser_course.parse_args()
@@ -37,9 +45,12 @@ class StudentCourses(Resource):
         return '', 204
 
     def put(self, student_id):
-        args = parser_course.parse_args()
-        add_course_to_student(student_id, args['course_id'])
-        return Response(convert_to_json(get_student_courses(student_id)), mimetype='application/json')
+        if add_course_to_student(student_id) is None:
+            return '', 404
+        else:
+            args = parser_course.parse_args()
+            add_course_to_student(student_id, args['course_id'])
+            return get_student_courses(student_id)
 
 
 class StudentList(Resource):

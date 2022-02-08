@@ -6,7 +6,7 @@ def get_student_courses(student_id):
     course_list = list()
     student = session.query(Student).filter(Student.id == student_id).first()
     if student is None:
-        return 'Error in data'
+        return None
     else:
         for courses in student.courses:
             sample = {
@@ -43,7 +43,7 @@ def add_course_to_student(student_id, courses_id):
         course = session.query(Course).filter(Course.id == course_id).first()
         courses.append(course)
     if student is None:
-        return 'Error in data'
+        return None
     else:
         for course in courses:
             if student.courses.count(course) > 0:
@@ -71,7 +71,7 @@ def get_solo_student_from_db(student_id):
 
 
 def get_students_data_from_db(course_id):
-    students_list = list()
+    students_list = []
     if course_id is None:
         students = session.query(Student).all()
     else:
@@ -89,7 +89,7 @@ def get_students_data_from_db(course_id):
 
 
 def get_groups_data_from_db(less_than):
-    groups_list = list()
+    groups_list = []
     if less_than is None:
         groups = session.query(Group).all()
     else:
