@@ -4,6 +4,7 @@ from models import session, Student, Group, Course
 from names import get_last_name, get_first_name
 
 
+
 def students_data():
     for student in range(200):
         random_student = {'first_name': get_first_name(), 'last_name': get_last_name()}

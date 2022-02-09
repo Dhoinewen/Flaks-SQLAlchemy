@@ -3,7 +3,7 @@ from sqlalchemy import func
 
 
 def get_student_courses(student_id):
-    course_list = list()
+    course_list = []
     student = session.query(Student).filter(Student.id == student_id).first()
     if student is None:
         return None
@@ -21,7 +21,7 @@ def delete_course_from_student(student_id, course_id):
     student = session.query(Student).filter(Student.id == student_id).first()
     course = session.query(Course).filter(Course.id == course_id[0]).first()
     if student and course is None:
-        return 'Error in data'
+        return None
     else:
         student.courses.remove(course)
         session.commit()
@@ -36,21 +36,17 @@ def add_new_student(first_name, last_name):
     return student
 
 
-def add_course_to_student(student_id, courses_id):
-    courses = list()
+def find_student(student_id):
     student = session.query(Student).filter(Student.id == student_id).first()
+    return student
+
+
+def add_courses_to_student(student, courses_id):
     for course_id in courses_id:
         course = session.query(Course).filter(Course.id == course_id).first()
-        courses.append(course)
-    if student is None:
-        return None
-    else:
-        for course in courses:
-            if student.courses.count(course) > 0:
-                print('None')
-            else:
-                student.courses.append(course)
-        session.commit()
+        if student.courses.count(course) <= 0:
+            student.courses.append(course)
+    session.commit()
 
 
 def delete_solo_student_from_db(student_id):
