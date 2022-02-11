@@ -1,6 +1,5 @@
-from flask import Flask, Response, request
+from flask import Flask
 from flask_restful import Api, Resource, reqparse
-from helpers import convert_to_json
 from get_data import get_students_data_from_db, get_groups_data_from_db, get_solo_student_from_db,\
     delete_solo_student_from_db, add_courses_to_student, add_new_student, delete_course_from_student,\
     get_student_courses, find_student
@@ -25,7 +24,7 @@ class StudentSolo(Resource):
         if student is None:
             return 404
         else:
-            return Response(convert_to_json(student), mimetype='application/json')
+            return student
 
     def delete(self, student_id):
         delete_solo_student_from_db(student_id)
@@ -57,18 +56,17 @@ class StudentCourses(Resource):
 class StudentList(Resource):
     def get(self):
         args = parser_course.parse_args()
-        return Response(convert_to_json(get_students_data_from_db(args['courses_id'])), mimetype='application/json')
+        return get_students_data_from_db(args['courses_id'])
 
     def put(self):
         args = parser_student_data.parse_args()
-        return Response(convert_to_json(add_new_student(args['first_name'], args['last_name'])),
-                        mimetype='application/json')
+        return add_new_student(args['first_name'], args['last_name'])
 
 
 class GroupList(Resource):
     def get(self):
         args = parser_group.parse_args()
-        return Response(convert_to_json(get_groups_data_from_db(args['less_than'])), mimetype='application/json')
+        return get_groups_data_from_db(args['less_than'])
 
 
 api.add_resource(StudentCourses, '/students/<student_id>/courses', '/students/<student_id>/courses/<course_id>')

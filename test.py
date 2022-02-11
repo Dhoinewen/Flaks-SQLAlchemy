@@ -23,22 +23,13 @@ class FlaskTest(unittest.TestCase):
         session.query(Student).filter(Student.first_name == 'test').delete()
         session.commit()
 
-    def test_db_students(self):
-        students = session.query(Student).all()
-        self.assertEqual(len(students), 198)
-
     def test_index_students(self):
         responce = self.__tester.get('/students')
         statuscode = responce.status_code
         self.assertEqual(statuscode, 200)
 
-    def test_db_before_put(self):
-        student = session.query(Student).filter(Student.id == 111).first()
-        student_courses = student.courses
-        self.assertEqual(len(student_courses), 3)
-
     def test_index_student_course_put(self):
-        courses_id = [1, 2, 3, 4, 5, 6, 7, 8, 9,]
+        courses_id = [1, 2, 3, 4, 5, 6, 7, 8, 9]
         student = session.query(Student).filter(Student.first_name == 'test').first()
         student_id = student.id
         student_courses_before = len(student.courses)
@@ -63,13 +54,22 @@ class FlaskTest(unittest.TestCase):
         self.assertEqual(statuscode, 204)
         self.assertLess(student_courses_after, student_courses_before)
 
-    def test_index_student_solo(self):
-        responce = self.__tester.get('/students/112')
+    def test_index_and_data_student_solo(self):
+        student = session.query(Student).filter(Student.first_name == 'test').first()
+        student_id = student.id
+        responce = self.__tester.get(f'/students/{student_id}')
         statuscode = responce.status_code
+        json_data = responce.json
         self.assertEqual(statuscode, 200)
+        self.assertTrue('test' in json_data['first_name'])
+        self.assertTrue('case' in json_data['last_name'])
+        self.assertNotEqual(json_data['courses'], None)
+        self.assertEqual(None, json_data['group'])
 
     def test_index_student_courses(self):
-        responce = self.__tester.get('/students/111/courses')
+        student = session.query(Student).filter(Student.first_name == 'test').first()
+        student_id = student.id
+        responce = self.__tester.get(f'/students/{student_id}/courses')
         statuscode = responce.status_code
         self.assertEqual(statuscode, 200)
 

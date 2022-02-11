@@ -33,7 +33,12 @@ def add_new_student(first_name, last_name):
     student = Student(**sample_student)
     session.add(student)
     session.commit()
-    return student
+    sample = {'first_name': student.first_name,
+              'last_name': student.last_name,
+              'id': student.id,
+              'courses': f'{student.courses}',
+              'group': student.group}
+    return sample
 
 
 def find_student(student_id):
@@ -61,7 +66,7 @@ def get_solo_student_from_db(student_id):
     sample = {'first_name': student.first_name,
               'last_name': student.last_name,
               'id': student.id,
-              'courses': student.courses,
+              'courses': f'{student.courses}',
               'group': student.group}
     return sample
 
@@ -77,7 +82,7 @@ def get_students_data_from_db(course_id):
             'first_name': student.first_name,
             'last_name': student.last_name,
             'id': student.id,
-            'courses': student.courses,
+            'courses': f'{student.courses}',
             'group': student.group
         }
         students_list.append(sample)
@@ -94,7 +99,7 @@ def get_groups_data_from_db(less_than):
         sample = {
             'id': group.id,
             'name': group.name,
-            'students': group.students
+            'students': f'{group.students}'
         }
         groups_list.append(sample)
     return groups_list
