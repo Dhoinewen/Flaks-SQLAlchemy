@@ -11,7 +11,7 @@ else:
     db_path = 'postgresql+psycopg2://postgres:123456@localhost/test'
 
 
-conn = create_engine(db_path)
+conn = create_engine('postgresql+psycopg2://postgres:123456@localhost/test25')
 Session = sessionmaker()
 session = Session(bind=conn)
 
