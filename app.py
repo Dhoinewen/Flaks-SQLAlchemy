@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response, request
 from flask_restful import Api, Resource, reqparse
 from helpers import convert_to_json
 from get_data import get_students_data_from_db, get_groups_data_from_db, get_solo_student_from_db,\
@@ -40,11 +40,6 @@ class StudentCourses(Resource):
         else:
             return student
 
-    def delete(self, student_id):
-        args = parser_course.parse_args()
-        delete_course_from_student(student_id, args['courses_id'])
-        return '', 204
-
     def put(self, student_id):
         student = find_student(student_id)
         if student is None:
@@ -53,6 +48,10 @@ class StudentCourses(Resource):
             args = parser_course.parse_args()
             add_courses_to_student(student, args['courses_id'])
             return get_student_courses(student_id)
+
+    def delete(self, student_id, course_id):
+        delete_course_from_student(student_id, course_id)
+        return '', 204
 
 
 class StudentList(Resource):
@@ -72,7 +71,7 @@ class GroupList(Resource):
         return Response(convert_to_json(get_groups_data_from_db(args['less_than'])), mimetype='application/json')
 
 
-api.add_resource(StudentCourses, '/students/<student_id>/courses')
+api.add_resource(StudentCourses, '/students/<student_id>/courses', '/students/<student_id>/courses/<course_id>')
 api.add_resource(StudentSolo, '/students/<student_id>')
 api.add_resource(StudentList, '/students')
 api.add_resource(GroupList, '/groups')
